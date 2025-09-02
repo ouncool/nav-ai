@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+	<meta charset="UTF-8">
+	<title>导航页</title>
+	<style>
+		body { font-family: sans-serif; margin: 20px; }
+		table { border-collapse: collapse; width: 100%; margin-top: 10px; }
+		th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+		th { background: #f0f0f0; cursor: pointer; }
+		tr:nth-child(even) { background: #fafafa; }
+		tr:hover { background: #eef; }
+		input[type="text"] { padding: 6px; width: 300px; }
+		button { padding: 6px 10px; margin-left: 5px; }
+	</style>
+</head>
+<body>
+	<h2>导航页</h2>
+	<input type="text" id="search" placeholder="搜索...">
+	<button onclick="saveData()">保存</button>
+	<table id="navTable">
+		<thead>
+			<tr>
+				<th onclick="sortTable(0)">名称</th>
+				<th onclick="sortTable(1)">简介</th>
+				<th onclick="sortTable(2)">内网地址</th>
+				<th onclick="sortTable(3)">外网地址</th>
+				<th onclick="sortTable(4)">备注</th>
+			</tr>
+		</thead>
+		<tbody></tbody>
+	</table>
+
+<script>
+let navData = [];
+let sortAsc = true;
+let authToken = null;
+
+async function loadData() {
+	const res = await fetch("/api/data");
+	navData = await res.json();
+	renderTable();
+}
+
+function renderTable(filter="") {
+	const tbody = document.querySelector("#navTable tbody");
+	tbody.innerHTML = "";
+	navData
+		.filter(row => JSON.stringify(row).toLowerCase().includes(filter.toLowerCase()))
+		.forEach((row, i) => {
+			const tr = document.createElement("tr");
+			["name", "desc", "intranet", "internet", "remark"].forEach(key => {
+				const td = document.createElement("td");
+				td.contentEditable = true;
+				td.innerText = row[key] || "";
+				td.oninput = e => navData[i][key] = e.target.innerText;
+				tr.appendChild(td);
+			});
+			tbody.appendChild(tr);
+		});
+// ...existing code...
