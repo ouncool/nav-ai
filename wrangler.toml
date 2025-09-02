@@ -1,0 +1,12 @@
+name = "nav-worker"
+main = "worker.js"
+compatibility_date = "2025-09-02"
+
+# 绑定 KV 命名空间（先 wrangler kv:namespace create "MY_KV"）
+kv_namespaces = [
+  { binding = "MY_KV", id = "xxxxxxxxxxxxxxxxxxxxx" }
+]
+
+# 静态文件目录
+[site]
+bucket = "./public"
